@@ -1,0 +1,346 @@
+MAP LAB
+----------------------------------------------------------------------------------------------------------------------
+1)Write a simple Program to demonstrate an OpenMP Fork-Join Parallelism.
+
+#include <stdio.h>
+#include <omp.h>
+int main(void)
+{
+    printf("Before: total thread number is %d\n", omp_get_num_threads());
+    #pragma omp parallel
+    {
+        printf("Thread id is %d\n", omp_get_thread_num());
+    }
+    printf("After: total thread number is %d\n", omp_get_num_threads());
+    return 0;
+}
+----------------------------------------------------------------------------------------------------------------------
+2)Simple matrix-vector multiplication using OpenMP directives to make it run in parallel.
+
+#include <stdio.h>
+#include <omp.h>
+int main() {
+    float A[2][2] = {{1, 2}, {3, 4}};
+    float b[] = {8, 10};
+    float c[2];
+    int i, j;
+    #pragma omp parallel for
+    for (i = 0; i < 2; i++) {
+        c[i] = 0;
+        for (j = 0; j < 2; j++) {
+            c[i] += A[i][j] * b[j];
+        }
+    }
+    for (i = 0; i < 2; i++) {
+        printf("c[%d] = %f\n", i, c[i]);
+    }
+    return 0;
+}
+----------------------------------------------------------------------------------------------------------------------
+3)Sum of all the elements in an array using Open MP.
+
+#include<omp.h>
+#include<bits/stdc++.h>
+using namespace std;
+int main() {
+    vector<int> arr{3, 1, 2, 5, 4, 0};
+    queue<int> data;
+    int arr_sum = accumulate(arr.begin(), arr.end(), 0);
+    int arr_size = arr.size();
+    int new_data_size, x, y;
+    for (int i = 0; i < arr_size; i++) {
+        data.push(arr[i]);
+    }
+    omp_set_num_threads(ceil(arr_size / 2));
+    #pragma omp parallel
+    {
+        #pragma omp critical
+        {
+            new_data_size = data.size();
+            for (int j = 1; j < new_data_size; j = j * 2) {
+                x = data.front();
+                data.pop();
+                y = data.front();
+                data.pop();
+                data.push(x + y);
+            }
+        }
+    }
+    cout << "Array prefix sum: " << data.front() << endl;
+    if (arr_sum == data.front()) {
+        cout << "Correct sum" << endl;
+    } else {
+        cout << "Incorrect Answer" << endl;
+    }
+    return 0;
+}
+----------------------------------------------------------------------------------------------------------------------
+4)Message-Passing logic using OpenMP.
+
+#include <omp.h>
+#include <stdio.h>
+#include <stdlib.h>
+int main (int argc, char* argv[])
+{
+    #pragma omp parallel
+    {
+        printf("Hello World... from thread = %d\n", omp_get_thread_num());
+    }
+    return 0;
+}
+----------------------------------------------------------------------------------------------------------------------
+5)Floyd's Algorithm Using OpenMP.
+
+#include <stdio.h>
+#include <math.h>
+#include <stdlib.h>
+#include <time.h>
+#include <omp.h>
+#define N 1200
+#ifndef min
+#define min(a,b) (((a) < (b)) ? (a) : (b))
+#endif
+int distance_matrix[N][N] = {0};
+int main(int argc, char *argv[])
+{
+    int nthreads;
+    int src, dst, middle;
+    for (src = 0; src < N; src++)
+    {
+        for (dst = 0; dst < N; dst++)
+        {
+            if (src != dst) {
+                distance_matrix[src][dst] = rand() % 20;
+            }
+        }
+    }
+    double start_time = omp_get_wtime();
+    for (middle = 0; middle < N; middle++)
+    {
+        int *dm = distance_matrix[middle];
+        for (src = 0; src < N; src++)
+        {
+            int *ds = distance_matrix[src];
+            for (dst = 0; dst < N; dst++)
+            {
+                ds[dst] = min(ds[dst], ds[middle] + dm[dst]);
+            }
+        }
+    }
+    double time = omp_get_wtime() - start_time;
+    printf("Total time for sequential (in sec): %.2f\n", time);
+    for (nthreads = 1; nthreads <= 10; nthreads++)
+    {
+        omp_set_num_threads(nthreads);
+        start_time = omp_get_wtime();
+        #pragma omp parallel shared(distance_matrix)
+        for (middle = 0; middle < N; middle++)
+        {
+            int *dm = distance_matrix[middle];
+            #pragma omp parallel for private(src, dst) schedule(dynamic)
+            for (src = 0; src < N; src++)
+            {
+                int *ds = distance_matrix[src];
+                for (dst = 0; dst < N; dst++)
+                {
+                    ds[dst] = min(ds[dst], ds[middle] + dm[dst]);
+                }
+            }
+        }
+        time = omp_get_wtime() - start_time;
+        printf("Total time for thread %d (in sec): %.2f\n", nthreads, time);
+    }
+    return 0;
+}
+----------------------------------------------------------------------------------------------------------------------
+6)Parallel Random Number Generators using Monte Carlo Methods.
+
+#include<omp.h>
+#include<stdio.h>
+#include<stdlib.h>
+#include <time.h>
+void monteCarlo(int N, int K)
+{
+    double x, y;
+    double d;
+    int pCircle = 0;
+    int pSquare = 0;
+    int i = 0;
+    #pragma omp parallel firstprivate(x, y, d, i) reduction(+ : pCircle, pSquare) num_threads(K)
+    {
+        srand48((int)time(NULL));
+        #pragma omp for
+        for (i = 0; i < N; i++) {
+            x = (double)drand48();
+            y = (double)drand48();
+            d = ((x * x) + (y * y));
+            if (d <= 1) {
+                pCircle++;
+            }
+            pSquare++;
+        }
+    }
+    double pi = 4.0 * ((double)pCircle / (double)(pSquare));
+    printf("Final Estimation of Pi = %f\n", pi);
+}
+int main()
+{
+    int N = 100000;
+    int K = 8;
+    monteCarlo(N, K);
+    return 0;
+}
+----------------------------------------------------------------------------------------------------------------------
+7)MPI Broadcast-Collective communication.
+
+#include <mpi.h>
+#include <stdio.h>
+int main(int argc, char** argv) {
+    int rank;
+    int buf;
+    MPI_Status status;
+    MPI_Init(&argc, &argv);
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+    if (rank == 0) {
+        buf = 777;
+        MPI_Bcast(&buf, 1, MPI_INT, 0, MPI_COMM_WORLD);
+    } else {
+        MPI_Recv(&buf, 1, MPI_INT, 0, 0, MPI_COMM_WORLD, &status);
+        printf("rank %d received %d\n", rank, buf);
+    }
+    MPI_Finalize();
+    return 0;
+}
+----------------------------------------------------------------------------------------------------------------------
+8)MPI-scatter-gather-and-all gather in C.
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include <mpi.h>
+#include <assert.h>
+float *create_rand_nums(int num_elements) {
+    float *rand_nums = (float *)malloc(sizeof(float) * num_elements);
+    assert(rand_nums != NULL);
+    int i;
+    for (i = 0; i < num_elements; i++) {
+        rand_nums[i] = (rand() / (float)RAND_MAX);
+    }
+    return rand_nums;
+}
+float compute_avg(float *array, int num_elements) {
+    float sum = 0.f;
+    int i;
+    for (i = 0; i < num_elements; i++) {
+        sum += array[i];
+    }
+    return sum / num_elements;
+}
+int main(int argc, char** argv) {
+    if (argc != 2) {
+        fprintf(stderr, "Usage: avg num_elements_per_proc\n");
+        exit(1);
+    }
+    int num_elements_per_proc = atoi(argv[1]);
+    srand(time(NULL));
+    MPI_Init(NULL, NULL);
+    int world_rank;
+    MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
+    int world_size;
+    MPI_Comm_size(MPI_COMM_WORLD, &world_size);
+    float *rand_nums = NULL;
+    if (world_rank == 0) {
+        rand_nums = create_rand_nums(num_elements_per_proc * world_size);
+    }
+    float *sub_rand_nums = (float *)malloc(sizeof(float) * num_elements_per_proc);
+    assert(sub_rand_nums != NULL);
+    MPI_Scatter(rand_nums, num_elements_per_proc, MPI_FLOAT,
+                sub_rand_nums, num_elements_per_proc, MPI_FLOAT, 0, MPI_COMM_WORLD);
+    float sub_avg = compute_avg(sub_rand_nums, num_elements_per_proc);
+    float *sub_avgs = (float *)malloc(sizeof(float) * world_size);
+    assert(sub_avgs != NULL);
+    MPI_Allgather(&sub_avg, 1, MPI_FLOAT, sub_avgs, 1, MPI_FLOAT, MPI_COMM_WORLD);
+    float avg = compute_avg(sub_avgs, world_size);
+    printf("Avg of all elements from proc %d is %f\n", world_rank, avg);
+    if (world_rank == 0) {
+        free(rand_nums);
+    }
+    free(sub_avgs);
+    free(sub_rand_nums);
+    MPI_Barrier(MPI_COMM_WORLD);
+    MPI_Finalize();
+    return 0;
+}
+----------------------------------------------------------------------------------------------------------------------
+9)MPI-send-and-receive in C.
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <mpi.h>
+int main(int argc, char **argv)
+{
+    int *array;
+    int tag = 1;
+    int size;
+    int rank;
+    MPI_Status status;
+    MPI_Init(&argc, &argv);
+    MPI_Comm_size(MPI_COMM_WORLD, &size);
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+    if (rank == 0)
+    {
+        array = (int *)malloc(10 * sizeof(int));
+        if (!array)
+        {
+            MPI_Abort(MPI_COMM_WORLD, 1);
+        }
+        for (int i = 0; i < 10; i++)
+        {
+            array[i] = i + 1;
+        }
+        MPI_Send(array, 10, MPI_INT, 1, tag, MPI_COMM_WORLD);
+        free(array);
+    }
+    if (rank == 1)
+    {
+        array = (int *)malloc(10 * sizeof(int));
+        if (!array)
+        {
+            MPI_Abort(MPI_COMM_WORLD, 1);
+        }
+        MPI_Recv(array, 10, MPI_INT, 0, tag, MPI_COMM_WORLD, &status);
+        printf("Process %d received the following array:\n", rank);
+        for (int i = 0; i < 10; i++)
+        {
+            printf("%d ", array[i]);
+        }
+        printf("\n");
+        free(array);
+    }
+    MPI_Finalize();
+    return 0;
+}
+----------------------------------------------------------------------------------------------------------------------
+10)Parallel rank-with-MPI in C.
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <mpi.h>
+#include "tmpi_rank.h"
+#include <time.h>
+int main(int argc, char** argv) {
+    MPI_Init(NULL, NULL);
+    int world_rank;
+    MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
+    int world_size;
+    MPI_Comm_size(MPI_COMM_WORLD, &world_size);
+    srand(time(NULL) * world_rank);
+    float rand_num = rand() / (float)RAND_MAX;
+    int rank;
+    TMPI_Rank(&rand_num, &rank, MPI_FLOAT, MPI_COMM_WORLD);
+    printf("Rank for %f on process %d - %d\n", rand_num, world_rank, rank);
+    MPI_Barrier(MPI_COMM_WORLD);
+    MPI_Finalize();
+    return 0;
+}
+----------------------------------------------------------------------------------------------------------------------
