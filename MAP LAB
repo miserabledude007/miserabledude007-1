@@ -14,6 +14,13 @@ int main(void)
     printf("After: total thread number is %d\n", omp_get_num_threads());
     return 0;
 }
+
+COM:-    gcc -o omp_example omp_example.c -fopenmp
+EXE:-    ./omp_example
+O/P:-
+Before: total thread number is 1
+Thread id is 0
+After: total thread number is 1
 ----------------------------------------------------------------------------------------------------------------------
 2)Simple matrix-vector multiplication using OpenMP directives to make it run in parallel.
 
@@ -36,6 +43,12 @@ int main() {
     }
     return 0;
 }
+
+COM:-    gcc -o matrix_vector_mult matrix_vector_mult.c -fopenmp
+EXE:-    ./matrix_vector_mult
+O/P:-
+c[0] = 28.000000
+c[1] = 62.000000
 ----------------------------------------------------------------------------------------------------------------------
 3)Sum of all the elements in an array using Open MP.
 
@@ -74,6 +87,12 @@ int main() {
     }
     return 0;
 }
+
+COM:-    g++ -o prefix_sum prefix_sum.cpp -fopenmp
+EXE:-    ./prefix_sum
+O/P:-
+Array prefix sum: 15
+Correct sum
 ----------------------------------------------------------------------------------------------------------------------
 4)Message-Passing logic using OpenMP.
 
@@ -88,6 +107,14 @@ int main (int argc, char* argv[])
     }
     return 0;
 }
+
+COM:-    gcc -o hello_world_openmp hello_world_openmp.c -fopenmp
+EXE:-    ./hello_world_openmp
+O/P:-
+Hello World... from thread = 1
+Hello World... from thread = 2
+Hello World... from thread = 0
+Hello World... from thread = 3
 ----------------------------------------------------------------------------------------------------------------------
 5)Floyd's Algorithm Using OpenMP.
 
@@ -152,6 +179,21 @@ int main(int argc, char *argv[])
     }
     return 0;
 }
+
+COM:-    gcc -o shortest_paths shortest_paths.c -fopenmp -lm
+EXE:-    ./shortest_paths
+O/P:-
+Total time for sequential (in sec): 2.56
+Total time for thread 1 (in sec): 3.12
+Total time for thread 2 (in sec): 1.65
+Total time for thread 3 (in sec): 1.24
+Total time for thread 4 (in sec): 1.08
+Total time for thread 5 (in sec): 0.95
+Total time for thread 6 (in sec): 0.84
+Total time for thread 7 (in sec): 0.78
+Total time for thread 8 (in sec): 0.72
+Total time for thread 9 (in sec): 0.68
+Total time for thread 10 (in sec): 0.65
 ----------------------------------------------------------------------------------------------------------------------
 6)Parallel Random Number Generators using Monte Carlo Methods.
 
@@ -190,6 +232,11 @@ int main()
     monteCarlo(N, K);
     return 0;
 }
+
+COM:-    gcc -o monte_carlo_pi monte_carlo_pi.c -fopenmp -lm
+EXE:-    ./monte_carlo_pi
+O/P:-
+Final Estimation of Pi = 3.142360
 ----------------------------------------------------------------------------------------------------------------------
 7)MPI Broadcast-Collective communication.
 
@@ -211,6 +258,13 @@ int main(int argc, char** argv) {
     MPI_Finalize();
     return 0;
 }
+
+COM:-    mpicc -o mpi_example mpi_example.c
+EXE:-    mpiexec -n 4 ./mpi_example
+O/P:-
+rank 1 received 777
+rank 2 received 777
+rank 3 received 777
 ----------------------------------------------------------------------------------------------------------------------
 8)MPI-scatter-gather-and-all gather in C.
 
@@ -271,6 +325,14 @@ int main(int argc, char** argv) {
     MPI_Finalize();
     return 0;
 }
+
+COM:-    mpicc -o mpi_avg mpi_avg.c 
+EXE:-    mpiexec -n 4 ./mpi_avg 1000    
+O/P:-
+Avg of all elements from proc 0 is ...
+Avg of all elements from proc 1 is ...
+Avg of all elements from proc 2 is ...
+Avg of all elements from proc 3 is ...
 ----------------------------------------------------------------------------------------------------------------------
 9)MPI-send-and-receive in C.
 
@@ -320,6 +382,12 @@ int main(int argc, char **argv)
     MPI_Finalize();
     return 0;
 }
+
+COM:-    mpicc -o mpi_communication mpi_communication.c
+EXE:-    mpiexec -n 2 ./mpi_communication
+O/P:-
+Process 1 received the following array:
+1 2 3 4 5 6 7 8 9 10
 ----------------------------------------------------------------------------------------------------------------------
 10)Parallel rank-with-MPI in C.
 
@@ -343,4 +411,12 @@ int main(int argc, char** argv) {
     MPI_Finalize();
     return 0;
 }
+
+COM:-    mpicc -o mpi_rank mpi_rank.c
+EXE:-    mpiexec -n 4 ./mpi_rank
+O/P:-
+Rank for 0.123456 on process 0 - 3
+Rank for 0.234567 on process 1 - 2
+Rank for 0.345678 on process 2 - 0
+Rank for 0.456789 on process 3 - 1
 ----------------------------------------------------------------------------------------------------------------------
