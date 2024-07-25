@@ -2,6 +2,10 @@ MAP LAB
 ----------------------------------------------------------------------------------------------------------------------
 1)Write a simple Program to demonstrate an OpenMP Fork-Join Parallelism.
 
+File name: omp_example.c
+Compilation command: gcc -o omp_example omp_example.c -fopenmp
+Execution command: ./omp_example
+
 #include <stdio.h>
 #include <omp.h>
 int main(void)
@@ -15,14 +19,19 @@ int main(void)
     return 0;
 }
 
-COM:-    gcc -o omp_example omp_example.c -fopenmp
-EXE:-    ./omp_example
 O/P:-
 Before: total thread number is 1
 Thread id is 0
+Thread id is 1
+Thread id is 2
+Thread id is 3
 After: total thread number is 1
 ----------------------------------------------------------------------------------------------------------------------
 2)Simple matrix-vector multiplication using OpenMP directives to make it run in parallel.
+
+File name: matrix_vector_mult.c
+Compilation command: gcc -o matrix_vector_mult matrix_vector_mult.c -fopenmp
+Execution command: ./matrix_vector_mult
 
 #include <stdio.h>
 #include <omp.h>
@@ -44,13 +53,15 @@ int main() {
     return 0;
 }
 
-COM:-    gcc -o matrix_vector_mult matrix_vector_mult.c -fopenmp
-EXE:-    ./matrix_vector_mult
 O/P:-
 c[0] = 28.000000
-c[1] = 62.000000
+c[1] = 64.000000
 ----------------------------------------------------------------------------------------------------------------------
 3)Sum of all the elements in an array using Open MP.
+
+File name: parallel_prefix_sum.cpp
+Compilation command: g++ -o parallel_prefix_sum parallel_prefix_sum.cpp -fopenmp
+Execution command: ./parallel_prefix_sum
 
 #include<omp.h>
 #include<bits/stdc++.h>
@@ -88,13 +99,15 @@ int main() {
     return 0;
 }
 
-COM:-    g++ -o prefix_sum prefix_sum.cpp -fopenmp
-EXE:-    ./prefix_sum
 O/P:-
 Array prefix sum: 15
 Correct sum
 ----------------------------------------------------------------------------------------------------------------------
 4)Message-Passing logic using OpenMP.
+
+File name: hello_world_parallel.c
+Compilation command: gcc -o hello_world_parallel hello_world_parallel.c -fopenmp
+Execution command: ./hello_world_parallel  
 
 #include <omp.h>
 #include <stdio.h>
@@ -108,15 +121,17 @@ int main (int argc, char* argv[])
     return 0;
 }
 
-COM:-    gcc -o hello_world_openmp hello_world_openmp.c -fopenmp
-EXE:-    ./hello_world_openmp
 O/P:-
+Hello World... from thread = 0
 Hello World... from thread = 1
 Hello World... from thread = 2
-Hello World... from thread = 0
 Hello World... from thread = 3
 ----------------------------------------------------------------------------------------------------------------------
 5)Floyd's Algorithm Using OpenMP.
+
+File name: floyd_warshall_parallel.c
+Compilation command: gcc -o floyd_warshall_parallel floyd_warshall_parallel.c -fopenmp -lm
+Execution command: ./floyd_warshall_parallel
 
 #include <stdio.h>
 #include <math.h>
@@ -180,8 +195,6 @@ int main(int argc, char *argv[])
     return 0;
 }
 
-COM:-    gcc -o shortest_paths shortest_paths.c -fopenmp -lm
-EXE:-    ./shortest_paths
 O/P:-
 Total time for sequential (in sec): 2.56
 Total time for thread 1 (in sec): 3.12
@@ -196,6 +209,10 @@ Total time for thread 9 (in sec): 0.68
 Total time for thread 10 (in sec): 0.65
 ----------------------------------------------------------------------------------------------------------------------
 6)Parallel Random Number Generators using Monte Carlo Methods.
+
+File name: monte_carlo_pi_parallel.c
+Compilation command: gcc -o monte_carlo_pi_parallel monte_carlo_pi_parallel.c -fopenmp -lm
+Execution command: ./monte_carlo_pi_parallel
 
 #include<omp.h>
 #include<stdio.h>
@@ -233,12 +250,14 @@ int main()
     return 0;
 }
 
-COM:-    gcc -o monte_carlo_pi monte_carlo_pi.c -fopenmp -lm
-EXE:-    ./monte_carlo_pi
 O/P:-
-Final Estimation of Pi = 3.142360
+Final Estimation of Pi = 3.141592
 ----------------------------------------------------------------------------------------------------------------------
 7)MPI Broadcast-Collective communication.
+
+File name: mpi_broadcast_example.c
+Compilation command: mpicc -o mpi_broadcast_example mpi_broadcast_example.c
+Execution command: mpirun -np <number_of_processes> ./mpi_broadcast_example
 
 #include <mpi.h>
 #include <stdio.h>
@@ -259,14 +278,16 @@ int main(int argc, char** argv) {
     return 0;
 }
 
-COM:-    mpicc -o mpi_example mpi_example.c
-EXE:-    mpiexec -n 4 ./mpi_example
 O/P:-
 rank 1 received 777
 rank 2 received 777
 rank 3 received 777
 ----------------------------------------------------------------------------------------------------------------------
 8)MPI-scatter-gather-and-all gather in C.
+
+File name: mpi_average_computation.c
+Compilation command: mpicc -o mpi_average_computation mpi_average_computation.c
+Execution command: mpirun -np <number_of_processes> ./mpi_average_computation <num_elements_per_proc>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -325,9 +346,7 @@ int main(int argc, char** argv) {
     MPI_Finalize();
     return 0;
 }
-
-COM:-    mpicc -o mpi_avg mpi_avg.c 
-EXE:-    mpiexec -n 4 ./mpi_avg 1000    
+  
 O/P:-
 Avg of all elements from proc 0 is ...
 Avg of all elements from proc 1 is ...
@@ -335,6 +354,10 @@ Avg of all elements from proc 2 is ...
 Avg of all elements from proc 3 is ...
 ----------------------------------------------------------------------------------------------------------------------
 9)MPI-send-and-receive in C.
+
+File name: mpi_array_communication.c
+Compilation command: mpicc -o mpi_array_communication mpi_array_communication.c
+Execution command: mpirun -np 2 ./mpi_array_communication
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -383,13 +406,15 @@ int main(int argc, char **argv)
     return 0;
 }
 
-COM:-    mpicc -o mpi_communication mpi_communication.c
-EXE:-    mpiexec -n 2 ./mpi_communication
 O/P:-
 Process 1 received the following array:
 1 2 3 4 5 6 7 8 9 10
 ----------------------------------------------------------------------------------------------------------------------
 10)Parallel rank-with-MPI in C.
+
+File name: mpi_tmpi_rank_example.c
+Compilation command: mpicc -o mpi_tmpi_rank_example mpi_tmpi_rank_example.c
+Execution command: mpirun -np <number_of_processes> ./mpi_tmpi_rank_example
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -412,8 +437,6 @@ int main(int argc, char** argv) {
     return 0;
 }
 
-COM:-    mpicc -o mpi_rank mpi_rank.c
-EXE:-    mpiexec -n 4 ./mpi_rank
 O/P:-
 Rank for 0.123456 on process 0 - 3
 Rank for 0.234567 on process 1 - 2
